@@ -9,7 +9,7 @@ uint8 in, out;
 
 // Takes the values from reg1, reg2 and performs the operation on them.
 // Stores the result in reg3.
-uint8 alu(uint8 input) {
+void alu(uint8 input) {
 	uint8 operation = input << 5; // get only the 3 lowest bits by shifting by 5 left and the right
 	operation >>= 5;
 
@@ -42,8 +42,6 @@ uint8 alu(uint8 input) {
 			printf("Calculation: unused\n");
 			break;
 	}
-
-	return 0;
 }
 
 // Checks if register 3 meets the given condition defined by the lowest 3 bits of the input.
@@ -131,7 +129,7 @@ void copy(uint8 input) {
 	*dest_reg = *src_reg;
 }
 
-int decoder(uint8 input) {
+void decoder(uint8 input) {
 	printf("Input: %0.8b (%i)\n", input, input);
 
 	uint8 instruction = (input >> 6) & 0b11;
@@ -153,7 +151,8 @@ int decoder(uint8 input) {
 			condition(input);
 			break;
 		default:
-			return 1;
+			printf("Instruction: undefined\n");
+			break;
 	}
 
 	for (uint8 i = 0; i < (uint8)sizeof(reg); i++) {
@@ -162,8 +161,6 @@ int decoder(uint8 input) {
 	printf("in:   %08b (%i)\n", in, in);
 	printf("out:  %08b (%i)\n", out, out);
 	printf("--------------------\n");
-
-	return 0;
 }
 
 int main() {
@@ -171,7 +168,7 @@ int main() {
 	uint8 bruteforce[8] = {1, 129, 2, 68, 158, 154, 179, 193};
 
 	for (instruction_counter = 0; instruction_counter < (uint8)sizeof(bruteforce); instruction_counter++) {
-		decoder(bruteforce[instruction_counter]); //TODO use output of decoder to end emulator on error
+		decoder(bruteforce[instruction_counter]);
 		if (out == 50) { // Check if output equals required value and set input accordingly
 			in = 1;
 		} else {
