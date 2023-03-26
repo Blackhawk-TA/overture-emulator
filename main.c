@@ -3,7 +3,7 @@
 
 typedef unsigned char uint8;
 
-uint8 instruction_counter = 0;
+uint8 instruction_index = 0;
 uint8 reg[6] = {};
 uint8 in, out;
 
@@ -90,7 +90,7 @@ void condition(uint8 input) {
 
 	// If condition is met, jump to instruction number stored in reg0
 	if (condition_met) {
-		instruction_counter = reg[0];
+		instruction_index = reg[0];
 	}
 }
 
@@ -124,6 +124,7 @@ void copy(uint8 input) {
 
 void decoder(uint8 input) {
 	printf("Input: %0.8b (%i)\n", input, input);
+	printf("Instruction index: %i (max. 255)\n", instruction_index);
 
 	uint8 instruction = (input >> 6) & 0b11; // get bits 1-2
 	switch (instruction) {
@@ -160,8 +161,8 @@ int main() {
 	// This is a program that keeps incrementing the output until the input equals 1
 	uint8 bruteforce[8] = {1, 129, 2, 68, 158, 154, 179, 193};
 
-	for (instruction_counter = 0; instruction_counter < (uint8)sizeof(bruteforce); instruction_counter++) {
-		decoder(bruteforce[instruction_counter]);
+	for (instruction_index = 0; instruction_index < (uint8)sizeof(bruteforce); instruction_index++) {
+		decoder(bruteforce[instruction_index]);
 		if (out == 50) { // Check if output equals required value and set input accordingly
 			in = 1;
 		} else {
