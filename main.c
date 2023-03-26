@@ -4,7 +4,8 @@
 typedef unsigned char uint8;
 
 uint8 instruction_counter = 0;
-uint8 reg[8] = {}; //reg6 = in; reg7 = out;
+uint8 reg[6] = {};
+uint8 in, out;
 
 // Takes the values from reg1, reg2 and performs the operation on them.
 // Stores the result in reg3.
@@ -105,21 +106,29 @@ void direct(uint8 input) {
 
 void copy(uint8 input) {
 	// get bit 3-6 by shifting 2 left and 3 right
-	uint8 source = (input << 2);
-	source >>= 5; //TODO check why it works in direct function but not in copy regarding bit shifting
+	uint8 src = (input << 2);
+	src >>= 5; //TODO check why it works in direct function but not in copy regarding bit shifting
 
 	// get only the 3 lowest bits by shifting by 5 left and the right
 	uint8 dest = (input << 5);
 	dest >>= 5;
 
-	if (dest == 6) { // Overwrite destination index when writing to output
-		dest = 7;
-	}
-
-	printf("Source: %0.8b (%i)\n", source, source);
+	printf("Source: %0.8b (%i)\n", src, src);
 	printf("Dest: %0.8b (%i)\n", dest, dest);
 
-	reg[dest] = reg[source];
+	uint8 *src_reg, *dest_reg;
+	if (src == 6) {
+		src_reg = &in;
+	} else {
+		src_reg = &reg[src];
+	}
+	if (dest == 6) {
+		dest_reg = &out;
+	} else {
+		dest_reg = &reg[dest];
+	}
+
+	*dest_reg = *src_reg;
 }
 
 int decoder(uint8 input) {
@@ -160,11 +169,11 @@ int main() {
 	uint8 bruteforce[8] = {1, 129, 2, 68, 158, 154, 179, 193};
 
 	for (instruction_counter = 0; instruction_counter < (uint8)sizeof(bruteforce); instruction_counter++) {
-		decoder(bruteforce[instruction_counter]);
-		if (reg[7] == 50) { // Check if output equals required value and set input accordingly
-			reg[6] = 1;
+		decoder(bruteforce[instruction_counter]); //TODO use output of decoder to end emulator on error
+		if (out == 50) { // Check if output equals required value and set input accordingly
+			in = 1;
 		} else {
-			reg[6] = 0;
+			in = 0;
 		}
 	}
 
