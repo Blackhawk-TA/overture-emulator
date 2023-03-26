@@ -10,7 +10,7 @@ uint8 in, out;
 // Takes the values from reg1, reg2 and performs the operation on them.
 // Stores the result in reg3.
 void alu(uint8 input) {
-	uint8 operation = input & 0b111; // get bits 6-8
+	uint8 operation = input & 0b111; // get bits 1-3 (reading from right to left. Bit order: 87654321)
 
 	switch (operation) {
 		case 0:
@@ -46,7 +46,7 @@ void alu(uint8 input) {
 // Checks if register 3 meets the given condition defined by the lowest 3 bits of the input.
 // It overwrites the condition counter with the value of reg0 if the condition is met.
 void condition(uint8 input) {
-	uint8 cond = input & 0b111; // get bits 6-8
+	uint8 cond = input & 0b111; // get bits 1-3
 	bool condition_met;
 
 	switch (cond) {
@@ -96,13 +96,13 @@ void condition(uint8 input) {
 
 // Writes the lowest 6 bits of the input to reg0
 void direct(uint8 input) {
-	uint8 value = input & 0b111111; // get bits 3-8
+	uint8 value = input & 0b111111; // get bits 1-6
 	reg[0] = (uint8)value;
 }
 
 void copy(uint8 input) {
-	uint8 src = (input >> 3) & 0b111; // get bits 3-5
-	uint8 dest = input & 0b111; // get bits 6-8
+	uint8 src = (input >> 3) & 0b111; // get bits 4-6
+	uint8 dest = input & 0b111; // get bits 1-3
 	uint8 *src_reg, *dest_reg;
 
 	printf("Source: %0.8b (%i)\n", src, src);
@@ -126,7 +126,7 @@ void decoder(uint8 input) {
 	printf("Input: %0.8b (%i)\n", input, input);
 	printf("Instruction index: %i (max. 255)\n", instruction_index);
 
-	uint8 instruction = (input >> 6) & 0b11; // get bits 1-2
+	uint8 instruction = (input >> 6) & 0b11; // get bits 7-8
 	switch (instruction) {
 		case 0:
 			printf("Instruction: direct\n");
