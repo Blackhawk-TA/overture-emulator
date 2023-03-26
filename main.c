@@ -157,8 +157,10 @@ int decoder(uint8 input) {
 	}
 
 	for (uint8 i = 0; i < (uint8)sizeof(reg); i++) {
-		printf("%i: %08b (%i)\n", i, reg[i], reg[i]);
+		printf("reg%i: %08b (%i)\n", i, reg[i], reg[i]);
 	}
+	printf("in:   %08b (%i)\n", in, in);
+	printf("out:  %08b (%i)\n", out, out);
 	printf("--------------------\n");
 
 	return 0;
