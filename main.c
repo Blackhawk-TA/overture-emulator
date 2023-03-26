@@ -5,7 +5,8 @@ typedef unsigned char uint8;
 
 uint8 instruction_index = 0;
 uint8 reg[6] = {};
-uint8 in, out;
+uint8 in = 0;
+uint8 out = 0;
 
 // Takes the values from reg1, reg2 and performs the operation on them.
 // Stores the result in reg3.
@@ -94,12 +95,13 @@ void condition(uint8 input) {
 	}
 }
 
-// Writes the lowest 6 bits of the input to reg0
+// Writes the lowest 6 bits of the input to reg0.
 void direct(uint8 input) {
 	uint8 value = input & 0b111111; // get bits 1-6
 	reg[0] = (uint8)value;
 }
 
+// Copies the a value from one register to another with bit 1-3 being the destination and 4-6 the source.
 void copy(uint8 input) {
 	uint8 src = (input >> 3) & 0b111; // get bits 4-6
 	uint8 dest = input & 0b111; // get bits 1-3
@@ -122,12 +124,13 @@ void copy(uint8 input) {
 	*dest_reg = *src_reg;
 }
 
+// Takes the highest 2 bits of an instruction to get the code for the operation and executes it.
 void decoder(uint8 input) {
 	printf("Input: %0.8b (%i)\n", input, input);
 	printf("Instruction index: %i (max. 255)\n", instruction_index);
 
-	uint8 instruction = (input >> 6) & 0b11; // get bits 7-8
-	switch (instruction) {
+	uint8 op_code = (input >> 6) & 0b11; // get bits 7-8
+	switch (op_code) {
 		case 0:
 			printf("Instruction: direct\n");
 			direct(input);
