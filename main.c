@@ -101,7 +101,7 @@ void direct(uint8 input) {
 	reg[0] = (uint8)value;
 }
 
-// Copies the a value from one register to another with bit 1-3 being the destination and 4-6 the source.
+// Copies the value from one register to another with bit 1-3 being the destination and 4-6 the source.
 void copy(uint8 input) {
 	uint8 src = (input >> 3) & 0b111; // get bits 4-6
 	uint8 dest = input & 0b111; // get bits 1-3
